@@ -1,0 +1,16 @@
+{{- range $i, $val := until (int .Values.replicaCount) }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: sybline-{{ int $i }}
+  labels:
+    app: sybline
+spec:
+  ports:
+  - protocol: TCP
+    port: 2221
+    name: web
+  selector:
+    statefulset.kubernetes.io/pod-name: sybline-statefulset-{{ int $i }}
+---
+{{- end }}

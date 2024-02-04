@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sybline-statefulset
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: sybline
+  template:
+    metadata:
+      name: "sybline"
+      labels:
+        app: sybline
+    spec:
+      serviceAccountName: {{ include "sybline-broker.serviceAccountName" . }}
+      containers:
+        - name: broker
+          image: {{ .Values.image.name }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 2221
+            - containerPort: 7878
+          resources:
+            limits:
+              cpu: 300m
+              memory: 300Mi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+          env:
+            - name: SERVER_PORT
+              value: "2221"
+            # - name: TLS_ENABLED
+            #   value: false
+            # - name: TLS_VERIFY_SKIP
+              # value: false
+            - name: NODES
+              value: "1,2"
+            - name: ADDRESSES
+              value: "node_1:2221,node_2:2221"
+            - name: SNAPSHOT_THRESHOLD
+              value: "100000"
+            - name: TOKEN_DURATION
+              value: "1800"
+            - name: SALT
+              value: "salty"
+            - name: K8S_AUTO
+              value: "true"
+            - name: STATEFULSET_NAME
+              value: "sybline-statefulset"
+            - name: REPLICA_COUNT
+              value: {{ .Values.replicaCount | quote }}
