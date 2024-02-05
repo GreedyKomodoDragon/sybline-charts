@@ -45,12 +45,12 @@ spec:
               value: {{ .Values.statefulset.env.TOKEN_DURATION | quote }}
             - name: SALT
               valueFrom:
-              secretKeyRef:
-                name: {{ include "sybline-broker.fullname" . }}-salt-secret
-                key: password
+                secretKeyRef:
+                  name: {{ include "sybline-broker.fullname" . }}-salt-secret
+                  key: salt
             # Value is not editable as helm chart utilises sybline broker's auto find functionality
             - name: K8S_AUTO
-              value: true
+              value: "true"
             - name: STATEFULSET_NAME
               value: {{ .Values.statefulset.name | quote }}
             - name: REPLICA_COUNT
