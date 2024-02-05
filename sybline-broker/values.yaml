@@ -1,6 +1,4 @@
-# Default values for sybline-broker.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+# Default values for sybline-broker
 
 replicaCount: 3
 
@@ -11,6 +9,37 @@ image:
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+statefulset:
+  name: sybline-statefulset
+  env:
+    SERVER_PORT: 2221
+    TLS_ENABLED: false
+    TLS_VERIFY_SKIP: false
+    SNAPSHOT_THRESHOLD: 100000
+    TOKEN_DURATION: 10800 # 6 hours is the default for the helm chart
+    REST_PORT: 7878
+  pod:
+    # Resources per pod
+    resources:
+      # defaults have not be tested for ideal production settings
+      limits:
+        cpu: 1000m
+        memory: 2000Mi
+      requests:
+        cpu: 500m
+        memory: 1000Mi
+
+
+secrets:
+  salt:
+    autoGenerate: 
+      enable: true # currently ignored
+      length: 10
+  #   overwrite: false
+  #   existing:
+  #     enable: false
+  #     name: ""
 
 serviceAccount:
   # Specifies whether a service account should be created

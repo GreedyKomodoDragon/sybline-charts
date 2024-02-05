@@ -1,3 +1,4 @@
+{{- $statefulsetName  := .Values.statefulset.name -}}
 {{- range $i, $val := until (int .Values.replicaCount) }}
 apiVersion: v1
 kind: Service
@@ -11,6 +12,6 @@ spec:
     port: 2221
     name: web
   selector:
-    statefulset.kubernetes.io/pod-name: sybline-statefulset-{{ int $i }}
+    statefulset.kubernetes.io/pod-name: {{ $statefulsetName  }}-{{ int $i }}
 ---
 {{- end }}
