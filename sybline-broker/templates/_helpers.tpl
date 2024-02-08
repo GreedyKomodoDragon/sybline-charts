@@ -50,13 +50,31 @@ app.kubernetes.io/name: {{ include "sybline-broker.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-{{/*
-Create the name of the service account to use
-*/}}
+
+# {{/*
+# Create the name of the service account to use
+# */}}
 {{- define "sybline-broker.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
 {{- default (include "sybline-broker.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}
+
+
+{{- define "salt.fullname" -}}
+{{- printf "%s-%s" ( include "sybline-broker.fullname" . ) "salt-secret" }}
+{{- end }}
+
+{{/*
+Will check if the salt already exists, if not it will create it
+*/}}
+{{- define "salt.getCurrent" -}}
+{{- $secret := (lookup "v1" "Secret" .Release.Namespace (include "salt.fullname" .)).data -}}
+{{ if $secret }}
+{{- index $secret "salt" }}
+{{- else }}
+{{- randAlphaNum (int .Values.secrets.salt.autoGenerate.length) | b64enc }}
 {{- end }}
 {{- end }}
