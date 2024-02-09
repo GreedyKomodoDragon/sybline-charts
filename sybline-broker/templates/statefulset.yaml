@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.statefulset.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: sybline
+  template:
+    metadata:
+      name: "sybline"
+      labels:
+        app: sybline
+    spec:
+      serviceAccountName: {{ include "sybline-broker.serviceAccountName" . }}
+      containers:
+        - name: broker
+          image: {{ .Values.image.name }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.statefulset.env.SERVER_PORT }}
+            - containerPort: {{ .Values.statefulset.env.REST_PORT }}
+          resources:
+            limits:
+              cpu: {{.Values.statefulset.pod.resources.limits.cpu }}
+              memory: {{.Values.statefulset.pod.resources.limits.memory }}
+            requests:
+              cpu: {{.Values.statefulset.pod.resources.requests.cpu }}
+              memory: {{.Values.statefulset.pod.resources.requests.memory }}
+          env:
+            - name: SERVER_PORT
+              value: {{ .Values.statefulset.env.SERVER_PORT | quote }}
+            # Why PROM_PORT and not REST_PORT?
+            # - Backwards compatability issue not yet fixed
+            - name: PROM_PORT
+              value: {{ .Values.statefulset.env.REST_PORT | quote }}
+            - name: TLS_ENABLED
+              value: {{ .Values.statefulset.env.TLS_ENABLED | quote }}
+            - name: TLS_VERIFY_SKIP
+              value: {{ .Values.statefulset.env.TLS_VERIFY_SKIP | quote }}
+            - name: SNAPSHOT_THRESHOLD
+              value: {{ .Values.statefulset.env.SNAPSHOT_THRESHOLD | quote }}
+            - name: TOKEN_DURATION
+              value: {{ .Values.statefulset.env.TOKEN_DURATION | quote }}
+            - name: SALT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "sybline-broker.fullname" . }}-salt-secret
+                  key: salt
+            # Value is not editable as helm chart utilises sybline broker's auto find functionality
+            - name: K8S_AUTO
+              value: "true"
+            - name: STATEFULSET_NAME
+              value: {{ .Values.statefulset.name | quote }}
+            - name: REPLICA_COUNT
+              value: {{ .Values.replicaCount | quote }}
