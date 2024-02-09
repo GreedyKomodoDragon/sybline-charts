@@ -22,4 +22,4 @@
 *.tmproj
 .vscode/
 
-role.yaml
+dev/
