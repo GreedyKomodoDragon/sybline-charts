@@ -55,3 +55,12 @@ spec:
               value: {{ .Values.statefulset.name | quote }}
             - name: REPLICA_COUNT
               value: {{ .Values.replicaCount | quote }}
+      {{ if .Values.statefulset.env.TLS_ENABLED }}
+          volumeMounts:
+            - name: certs-volume
+              mountPath: /cert
+      volumes:
+        - name: certs-volume
+          configMap:
+            name: {{ include "sybline-broker.certConfigMapName" . }}
+      {{ end }}

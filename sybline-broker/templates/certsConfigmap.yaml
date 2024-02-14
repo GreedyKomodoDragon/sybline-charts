@@ -1,0 +1,13 @@
+{{ if .Values.statefulset.env.TLS_ENABLED }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "sybline-broker.certConfigMapName" . }}
+data:
+  ca-cert.pem: |-
+    {{ .Files.Get .Values.secrets.mtls.caCertURI | nindent 8 }}
+  cert.pem: |-
+    {{ .Files.Get .Values.secrets.mtls.certURI | nindent 8 }}
+  key.pem: |-
+    {{ .Files.Get .Values.secrets.mtls.keyURI | nindent 8 }}
+{{ end }}

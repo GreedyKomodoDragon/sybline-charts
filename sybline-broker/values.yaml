@@ -40,6 +40,12 @@ secrets:
   #   existing:
   #     enable: false
   #     name: ""
+  # mtls is ignored if statefulset.env.TLS_ENABLED is false
+  mtls:  
+    keyURI: "certificates/key.pem"
+    caCertURI: "certificates/ca-cert.pem"
+    certURI: "certificates/cert.pem"
+
 
 serviceAccount:
   # Specifies whether a service account should be created
