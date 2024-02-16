@@ -32,7 +32,7 @@ statefulset:
 
 ingress:
   # By Default the Ingress is disabled
-  enable: false
+  enable: true
   class: nginx
 
 secrets:

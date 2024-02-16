@@ -15,7 +15,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: sybline-service-{{ int $i }}
+                name: {{ printf "%s-%s-%s" ( $.Release.Name ) "sybline-service" (toString $i) }}
                 port:
                   number: {{ $.Values.statefulset.env.REST_PORT }}
 ---
