@@ -3,12 +3,12 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: sybline-ingress-{{ int $i }}
+  name: {{ printf "%s-%s-%s" ( $.Release.Name )  "ingress" ( toString $i )}}
   namespace: {{ $.Release.Namespace }}
 spec:
   ingressClassName: {{ $.Values.ingress.class }}
   rules:
-    - host: sybline-{{ int $i }}.io
+    - host: {{ printf "%s-%s-%s.io" ( $.Release.Name ) "sybline" (toString $i) }}
       http:
         paths:
           - path: /

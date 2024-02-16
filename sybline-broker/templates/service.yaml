@@ -1,4 +1,3 @@
-{{- $statefulsetName  := .Values.statefulset.name -}}
 {{- $serverPort  := .Values.statefulset.env.SERVER_PORT -}}
 {{- $restPort  := .Values.statefulset.env.REST_PORT -}}
 {{- range $i, $val := until (int .Values.replicaCount) }}
@@ -17,6 +16,6 @@ spec:
     port: {{ $restPort }}
     name: web-rest
   selector:
-    statefulset.kubernetes.io/pod-name: {{ $statefulsetName  }}-{{ int $i }}
+    statefulset.kubernetes.io/pod-name: {{ printf "%s-%s-%s" ( $.Release.Name ) $.Values.statefulset.name (toString $i) }}
 ---
 {{- end }}

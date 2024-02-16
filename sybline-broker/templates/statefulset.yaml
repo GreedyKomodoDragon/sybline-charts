@@ -52,7 +52,7 @@ spec:
             - name: K8S_AUTO
               value: "true"
             - name: STATEFULSET_NAME
-              value: {{ .Values.statefulset.name | quote }}
+              value: {{ printf "%s-%s" ( .Release.Name ) .Values.statefulset.name }}
             - name: REPLICA_COUNT
               value: {{ .Values.replicaCount | quote }}
       {{ if .Values.statefulset.env.TLS_ENABLED }}
