@@ -30,6 +30,10 @@ statefulset:
         cpu: 500m
         memory: 1000Mi
 
+ingress:
+  # By Default the Ingress is disabled
+  enable: true
+  class: nginx
 
 secrets:
   salt:
