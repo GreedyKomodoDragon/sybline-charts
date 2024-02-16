@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Values.statefulset.name }}
+  name: {{ printf "%s-%s" ( .Release.Name ) .Values.statefulset.name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -26,8 +26,8 @@ spec:
               cpu: {{.Values.statefulset.pod.resources.limits.cpu }}
               memory: {{.Values.statefulset.pod.resources.limits.memory }}
             requests:
-              cpu: {{.Values.statefulset.pod.resources.requests.cpu }}
-              memory: {{.Values.statefulset.pod.resources.requests.memory }}
+              cpu: {{ .Values.statefulset.pod.resources.requests.cpu }}
+              memory: {{ .Values.statefulset.pod.resources.requests.memory }}
           env:
             - name: SERVER_PORT
               value: {{ .Values.statefulset.env.SERVER_PORT | quote }}
