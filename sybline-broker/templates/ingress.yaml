@@ -1,0 +1,23 @@
+{{ if .Values.ingress.enable }}
+{{- range $i, $val := until (int .Values.replicaCount) }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sybline-ingress-{{ int $i }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  ingressClassName: {{ $.Values.ingress.class }}
+  rules:
+    - host: sybline-{{ int $i }}.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: sybline-service-{{ int $i }}
+                port:
+                  number: {{ $.Values.statefulset.env.REST_PORT }}
+---
+{{- end }}
+{{ end }}

@@ -1,16 +1,21 @@
 {{- $statefulsetName  := .Values.statefulset.name -}}
+{{- $serverPort  := .Values.statefulset.env.SERVER_PORT -}}
+{{- $restPort  := .Values.statefulset.env.REST_PORT -}}
 {{- range $i, $val := until (int .Values.replicaCount) }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: sybline-{{ int $i }}
+  name: sybline-service-{{ int $i }}
   labels:
     app: sybline
 spec:
   ports:
   - protocol: TCP
-    port: 2221
-    name: web
+    port: {{ $serverPort }}
+    name: web-grpc
+  - protocol: TCP
+    port: {{ $restPort }}
+    name: web-rest
   selector:
     statefulset.kubernetes.io/pod-name: {{ $statefulsetName  }}-{{ int $i }}
 ---
