@@ -78,3 +78,10 @@ Will check if the salt already exists, if not it will create it
 {{- randAlphaNum (int .Values.secrets.salt.autoGenerate.length) | b64enc }}
 {{- end }}
 {{- end }}
+
+{{/*
+Creates the name of the configmap for the certs 
+*/}}
+{{- define "sybline-broker.certConfigMapName" -}}
+{{- printf "%s-%s" (include "sybline-broker.fullname" .) "cert-configmap"  }}
+{{- end }}
